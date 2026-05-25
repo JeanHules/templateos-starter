@@ -1,0 +1,31 @@
+name: Deploy to TemplateOS
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm install
+
+      - name: Pack template
+        run: npm run pack
+
+      - name: Sync to TemplateOS
+        run: |
+          ZIP=$(ls *.zip | head -1)
+          echo "Uploading $ZIP"
+          curl -f -X POST \
+            -H "Authorization: Bearer ${{ secrets.TEMPLATEOS_API_KEY }}" \
+            -F "zip=@$ZIP" \
+            ${{ vars.TEMPLATEOS_URL || 'https://templateos.com' }}/api/templates/sync
