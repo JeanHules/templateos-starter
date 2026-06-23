@@ -24,7 +24,9 @@ buildable component library. Do the work end to end and stop only at the review 
    fix type errors, drop missing-package imports), then re-run. **Loop until it passes.** A
    failing component is broken for every buyer — never proceed with one.
 
-3. **Start the preview.** Run `npm run dev` (serves http://localhost:3000).
+3. **Start the preview (non-blocking).** `npm run dev` is a long-running server — only start it
+   if your tool can background processes; never run it in the foreground or wait on it. If you
+   can't background it, skip and tell the author to run `npm run dev` themselves in step 4.
 
 4. **Hand off — STOP.** Tell the author: their kit is ready (N components, all verified); to
    review every component at **http://localhost:3000/review**; that they can ask you for

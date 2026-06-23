@@ -5,10 +5,13 @@ import { useState, useCallback } from "react";
 // ─── iframe utilities ─────────────────────────────────────────────────────────
 
 function getComponentName(code: string): string | null {
-  const match = code.match(
-    /export\s+default\s+function\s+([A-Z]\w*)|(?:export\s+default\s+)?(?:function\s+([A-Z]\w*)|(?:const|let|var)\s+([A-Z]\w*)\s*=)/
-  );
-  return match?.[1] ?? match?.[2] ?? match?.[3] ?? null;
+  // Find the default export (what we render) first — not the first helper/const above it.
+  let m = code.match(/export\s+default\s+function\s+([A-Z]\w*)/);
+  if (m) return m[1];
+  m = code.match(/export\s+default\s+([A-Z]\w*)\b/);
+  if (m) return m[1];
+  m = code.match(/export\s+(?:function|const|let|var)\s+([A-Z]\w*)/);
+  return m?.[1] ?? null;
 }
 
 function extractPackageImports(code: string): string[] {
@@ -92,7 +95,8 @@ function buildSrcdoc(code: string, name: string): string {
       Babel.registerPreset('tsx', {
         presets: [
           [Babel.availablePresets['react'], { runtime: 'automatic' }],
-          [Babel.availablePresets['typescript'], { allExtensions: true, isTSX: true }]
+          // .tsx filename drives JSX detection; allExtensions/isTSX were removed in newer Babel.
+          [Babel.availablePresets['typescript']]
         ]
       });
       var src = \`${safeCode}\`;

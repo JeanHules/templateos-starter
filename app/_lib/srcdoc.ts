@@ -3,10 +3,15 @@
 // page. (The single-component viewer keeps its own copy; keep these in sync.)
 
 export function getComponentName(code: string): string | null {
-  const match = code.match(
-    /export\s+default\s+function\s+([A-Z]\w*)|(?:export\s+default\s+)?(?:function\s+([A-Z]\w*)|(?:const|let|var)\s+([A-Z]\w*)\s*=)/,
-  );
-  return match?.[1] ?? match?.[2] ?? match?.[3] ?? null;
+  // The default export is what we render — find it first, regardless of how many
+  // helper components or PascalCase consts are declared above it.
+  let m = code.match(/export\s+default\s+function\s+([A-Z]\w*)/);
+  if (m) return m[1];
+  m = code.match(/export\s+default\s+([A-Z]\w*)\b/); // export default Foo;
+  if (m) return m[1];
+  // No default export — fall back to a named export component.
+  m = code.match(/export\s+(?:function|const|let|var)\s+([A-Z]\w*)/);
+  return m?.[1] ?? null;
 }
 
 function extractPackageImports(code: string): string[] {
@@ -84,7 +89,9 @@ export function buildSrcdoc(code: string, entryName: string): string {
       Babel.registerPreset('tsx', {
         presets: [
           [Babel.availablePresets['react'], { runtime: 'automatic' }],
-          [Babel.availablePresets['typescript'], { allExtensions: true, isTSX: true }]
+          // JSX detection comes from the .tsx filename below; the old
+          // allExtensions/isTSX options were removed in newer @babel/standalone.
+          [Babel.availablePresets['typescript']]
         ]
       });
       var src = \`${safeCode}\`;

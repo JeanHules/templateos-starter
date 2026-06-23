@@ -50,22 +50,26 @@ For each component it reports as failing:
 Re-run `npm run verify` after fixes. **Loop until it exits clean.** Do not move on with any
 failing component — a component that fails here is broken for every buyer.
 
-## Stage 3 — Start the preview
+## Stage 3 — Start the preview (non-blocking)
 
-Start the dev server in the background so the author can look at the result:
+`npm run dev` is a long-running server — **do not run it in the foreground**, it will block
+the session. If your tool can run background processes (Claude Code: run it backgrounded), start
+it now:
 
 ```bash
-npm run dev
+npm run dev      # background only — serves http://localhost:3000
 ```
 
-(It serves on http://localhost:3000.)
+If your tool can't cleanly background a process, skip this — just tell the author to run
+`npm run dev` themselves in the handoff. Either way, never wait on the server.
 
 ## Stage 4 — Hand off to review  ·  STOP
 
-Stop and tell the author, in these words:
+Stop and tell the author, in these words (include the dev step if you didn't start it):
 
 > Your kit is ready — **N components**, all verified to compile.
-> Review every component at **http://localhost:3000/review**.
+> Run **`npm run dev`** (if it isn't already running) and review every component at
+> **http://localhost:3000/review**.
 > Tell me anything you want changed and I'll update it and re-verify.
 > When it all looks right, run **`npm run pack`** to build the zip.
 
