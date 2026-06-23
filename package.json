@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "verify": "npx tsx scripts/verify.ts",
     "pack": "npx tsx scripts/pack.ts",
     "submit": "npx tsx scripts/submit.ts"
   },

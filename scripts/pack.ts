@@ -10,6 +10,7 @@
 import fs from "fs";
 import path from "path";
 import { zipSync, strToU8 } from "fflate";
+import { verifyAll } from "./verify";
 
 async function main() {
   const configPath = path.join(process.cwd(), "templateos.config.ts");
@@ -33,6 +34,23 @@ async function main() {
   if (files.length === 0) {
     console.error("No components found in components/");
     process.exit(1);
+  }
+
+  // Gate: every shipped component must compile in isolation before we zip.
+  // A buyer's agent receives each component as a single self-contained file, so
+  // a stray local import or type error here means a broken download downstream.
+  if (!process.argv.includes("--skip-verify")) {
+    const verify = await verifyAll(process.cwd());
+    if (!verify.ok) {
+      console.error("\n✗ Not packing — these components don't compile:\n");
+      for (const r of verify.results.filter((x) => !x.ok)) {
+        console.error(`  ✗ ${r.name}`);
+        for (const e of r.errors) console.error(`      ${e}`);
+      }
+      console.error("\nRun `npm run verify` for the full report, or `npm run pack -- --skip-verify` to override.\n");
+      process.exit(1);
+    }
+    console.log(`✓ Verified ${verify.results.length} component${verify.results.length === 1 ? "" : "s"} compile.`);
   }
 
   const zipEntries: Record<string, Uint8Array> = {};

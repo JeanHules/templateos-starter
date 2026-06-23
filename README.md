@@ -15,16 +15,39 @@ Open [http://localhost:3000](http://localhost:3000) — you'll see your componen
 
 ---
 
-## Already have an HTML template?
+## Already have a template? Build a kit in one command
 
-Drop your existing HTML/CSS into [`html/`](html/) and let Claude Code convert it for you. From the repo root:
+Drop your existing HTML/CSS template into [`html/`](html/), then point your coding agent at it:
 
 ```
+# Claude Code
 claude
-> use the html-to-templateos skill to convert the template in ./html
+> build my kit from the template in ./html
+
+# Codex / Gemini — they follow CONVERT.md
+> follow CONVERT.md to build a kit from ./html
 ```
 
-The bundled **`html-to-templateos`** skill ([`.claude/skills/`](.claude/skills/html-to-templateos/SKILL.md)) inventories your pages and stylesheets, splits each page into PascalCase section components (`NavBar`, `HeroSection`, `Footer`, …), extracts your colors/typography/spacing/radii into `templateos.config.ts`, and keeps your real content — all running locally with your own Claude. Review the two checkpoints it surfaces (category + section plan), then `npm run dev` to preview and `npm run pack` to ship.
+The agent runs the whole flow for you ([CONVERT.md](CONVERT.md) / the bundled
+[`build-from-template`](.claude/skills/build-from-template/SKILL.md) skill):
+
+1. **Generates a complete kit** — derives your design tokens, extracts the components that
+   exist in the template, and *generates the missing ones in your template's own style* (so you
+   get the full category kit, not just the sections the source happened to have).
+2. **Self-verifies** — runs `npm run verify` and fixes anything that doesn't compile, looping
+   until every component is clean. Nothing broken survives.
+3. **Starts the preview** and hands off to you.
+
+Then **you review at [http://localhost:3000/review](http://localhost:3000/review)** — every
+component live on one page. Ask the agent for changes (it edits + re-verifies), and when it
+looks right:
+
+```
+npm run pack     # verify + zip → <id>.zip   (then upload, or: npm run submit)
+```
+
+Run `npm run verify` any time to check your components compile in isolation — the same gate
+`pack` enforces before it will build.
 
 ---
 

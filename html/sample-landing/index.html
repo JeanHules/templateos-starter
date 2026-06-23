@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Beacon — Analytics for teams that ship</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="nav">
+    <a class="brand" href="/">Beacon</a>
+    <nav class="nav-links">
+      <a href="#features">Features</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#docs">Docs</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="link" href="/login">Sign in</a>
+      <a class="btn btn-primary" href="/signup">Start free</a>
+    </div>
+  </header>
+
+  <section class="hero">
+    <p class="eyebrow">Product analytics</p>
+    <h1>Understand every release in real time</h1>
+    <p class="lede">Beacon turns raw events into answers your whole team can act on — no SQL, no waiting on the data team.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="/signup">Start free trial</a>
+      <a class="btn btn-ghost btn-lg" href="#demo">Watch demo</a>
+    </div>
+  </section>
+
+  <section id="features" class="features">
+    <h2 class="section-title">Everything you need to measure impact</h2>
+    <div class="feature-grid">
+      <article class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h3>Live dashboards</h3>
+        <p>Watch funnels and retention update the moment a build goes out.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">🧭</div>
+        <h3>Self-serve exploration</h3>
+        <p>Anyone on the team can slice events without writing a query.</p>
+      </article>
+      <article class="feature-card">
+        <div class="feature-icon">🔔</div>
+        <h3>Smart alerts</h3>
+        <p>Get pinged in Slack when a metric drifts outside its band.</p>
+      </article>
+    </div>
+  </section>
+
+  <section id="pricing" class="pricing">
+    <h2 class="section-title">Simple, usage-based pricing</h2>
+    <div class="pricing-grid">
+      <div class="price-card">
+        <h3>Starter</h3>
+        <p class="price"><span>$0</span>/mo</p>
+        <ul>
+          <li>Up to 10k events</li>
+          <li>3 dashboards</li>
+          <li>Community support</li>
+        </ul>
+        <a class="btn btn-ghost" href="/signup">Get started</a>
+      </div>
+      <div class="price-card price-card--featured">
+        <h3>Growth</h3>
+        <p class="price"><span>$49</span>/mo</p>
+        <ul>
+          <li>Up to 1M events</li>
+          <li>Unlimited dashboards</li>
+          <li>Slack alerts &amp; priority support</li>
+        </ul>
+        <a class="btn btn-primary" href="/signup">Start free trial</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span class="brand">Beacon</span>
+    <nav class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <a href="#">Status</a>
+    </nav>
+    <p class="copyright">© 2026 Beacon, Inc.</p>
+  </footer>
+
+  <script>
+    // simple mobile-menu toggle — the skill should re-implement this with React state
+    document.querySelector('.brand')?.addEventListener('click', () => {});
+  </script>
+</body>
+</html>
