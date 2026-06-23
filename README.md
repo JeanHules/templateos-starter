@@ -15,6 +15,19 @@ Open [http://localhost:3000](http://localhost:3000) — you'll see your componen
 
 ---
 
+## Already have an HTML template?
+
+Drop your existing HTML/CSS into [`html/`](html/) and let Claude Code convert it for you. From the repo root:
+
+```
+claude
+> use the html-to-templateos skill to convert the template in ./html
+```
+
+The bundled **`html-to-templateos`** skill ([`.claude/skills/`](.claude/skills/html-to-templateos/SKILL.md)) inventories your pages and stylesheets, splits each page into PascalCase section components (`NavBar`, `HeroSection`, `Footer`, …), extracts your colors/typography/spacing/radii into `templateos.config.ts`, and keeps your real content — all running locally with your own Claude. Review the two checkpoints it surfaces (category + section plan), then `npm run dev` to preview and `npm run pack` to ship.
+
+---
+
 ## The only rules for components
 
 1. **One file = one component.** `Button.tsx`, `HeroSection.tsx`, `DataTable.tsx`
