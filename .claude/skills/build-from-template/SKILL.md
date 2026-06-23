@@ -24,7 +24,7 @@ happen to exist in the source:
   Footer, cards, pricing) → `components/*.tsx`.
 - **Generate** the rest **in the derived style**: interactive components (Modal, Tabs,
   Carousel, Select) and any component the template lacks but the category expects (see the
-  category checklist in `reference.md`). A component the source doesn't have should still be
+  "Category kit" + "Building a complete kit" in `reference.md`). A component the source lacks should still be
   produced, styled to match the template's look.
 
 Every component must follow the format rules in `reference.md`: single self-contained `.tsx`,

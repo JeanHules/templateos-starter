@@ -69,24 +69,66 @@ Every `components/*.tsx` file must:
 
 ---
 
-## Category checklist
+## Category kit
 
-Pick the category from the content, then aim to produce at least these components (named in
-PascalCase). Buyers filter by category and expect this set.
+The standard kit per category. These **exact PascalCase names** are what `npm run dev` scores
+on the home page (required vs recommended), so producing them by these names gives the author
+an all-green checklist.
 
-| Category | Expected components |
-|----------|--------------------|
-| `marketing` | NavBar, HeroSection, FeatureGrid, Footer, Button |
-| `saas` | NavBar, HeroSection, FeatureGrid, PricingCard, Footer, Button |
-| `dashboard` | Sidebar, NavBar, StatCard, DataTable, Button, Badge |
-| `ecommerce` | NavBar, ProductCard, Footer, Button, Badge |
-| `docs` | NavBar, Sidebar, Footer, Button |
-| `portfolio` | NavBar, HeroSection, ProjectCard, Footer |
-| `blog` | NavBar, HeroSection, BlogCard, Footer, Button |
-| `agency` | NavBar, HeroSection, ServiceCard, Footer, Button |
+| Category | Required | Recommended |
+|----------|----------|-------------|
+| `marketing` | NavBar, HeroSection, FeatureSection, Footer, Button | TestimonialsSection, PricingSection, CTASection, FAQSection, LogoSection, StatsSection, BlogCard, AnnouncementBar |
+| `saas` | NavBar, HeroSection, FeatureSection, PricingSection, Footer, Button, Badge | TestimonialsSection, FAQSection, CTASection, Modal, Toast, Tabs, Avatar, Toggle |
+| `dashboard` | Sidebar, NavBar, StatCard, DataTable, Button, Badge, Tabs, Breadcrumb | ActivityFeed, CommandMenu, PageHeader, Modal, Toast, EmptyState, Pagination, Avatar |
+| `ecommerce` | NavBar, ProductCard, Footer, Button, Badge | CartDrawer, ProductGrid, ReviewCard, Breadcrumb, Modal, Toast |
+| `docs` | NavBar, Sidebar, Footer, Button, Breadcrumb | SearchModal, CodeBlock, Callout, Pagination, Tabs, Badge |
+| `portfolio` | NavBar, HeroSection, ProjectCard, Footer | TestimonialsSection, CTASection, StatsSection, Avatar, Badge |
+| `blog` | NavBar, HeroSection, BlogCard, Footer, Button | NewsletterSection, AuthorCard, TagList, Pagination, Badge |
+| `agency` | NavBar, HeroSection, ServiceCard, Footer, Button | TestimonialsSection, TeamSection, CTASection, StatsSection, Badge |
 
-Add any extra sections the source has (TestimonialCard, CTABanner, FAQ, LogoCloud, Stats…)
-as their own components.
+---
+
+## Building a complete kit (extract + generate)
+
+You are not transliterating a template — you are producing a **complete, coherent kit in the
+template's design language**. Two moves, anchored to one derived style guide.
+
+### Target set
+
+Produce: **everything you can extract from the source ∪ the category's standard kit** (required
++ recommended above). Cap ~30. A component the source lacks is still produced — *generated* in
+the derived style. Don't invent components outside the kit (a job board needs no Kanban board).
+
+### Extract or generate — decide per component
+
+- **EXTRACT** (source markup → Tailwind) — static structural components that exist in the
+  template: NavBar, Hero, Footer, feature / pricing / testimonial sections, cards. Keep the
+  author's real content.
+- **GENERATE** (fresh, in the derived style) — *even if a version exists in the source*:
+  - **Interactive** components: Modal, Tabs, Carousel, Accordion, Select/Combobox, Toast,
+    Dropdown, Sidebar. Source versions are usually jQuery/plugin-coupled — transliterating
+    them degrades badly (a carousel collapses to one static slide; a fancy select becomes a
+    bare `<select>`). A clean React + state version in the template's look is better.
+  - Any **required/recommended** component the source doesn't have at all.
+- **Lean generate-more.** Extraction supplies real content and *informs* the style guide;
+  generation gives you clean, self-contained, buildable components that look like one system.
+
+### How to generate a component in-style
+
+You already derived the style guide (tokens + patterns). To generate a component the source
+lacks, reuse *that language* so it looks native — not like a generic Tailwind snippet:
+
+1. **Color** — primary for CTAs/active states, the neutral ramp for text/borders/surfaces,
+   semantic colors for status. Use the exact token values you extracted (`bg-[#ff6158]`).
+2. **Shape** — the radius scale, border weights, and shadow style seen on the source's cards
+   and buttons. If buttons are `rounded-lg` with a soft shadow, your generated Modal's buttons
+   match.
+3. **Type** — the font + size/weight scale from the tokens.
+4. **Density** — the spacing rhythm (padding, gaps) the source used.
+5. **Content** — realistic, domain-appropriate defaults. A job board's Modal confirms an
+   application; an ecommerce `CartDrawer` lists products; a docs `Callout` shows a tip.
+
+The bar: **a buyer can't tell which components were extracted and which were generated.**
 
 ---
 

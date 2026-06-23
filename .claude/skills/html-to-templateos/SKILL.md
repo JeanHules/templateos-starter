@@ -1,6 +1,6 @@
 ---
 name: html-to-templateos
-description: Convert an existing HTML/CSS template into TemplateOS-format React + Tailwind components. Use when the user wants to turn HTML files — a landing page, purchased theme, or static site — into self-contained .tsx components under components/ plus design tokens in templateos.config.ts, ready to preview and `npm run pack`.
+description: Turn an existing HTML/CSS template into a complete TemplateOS component kit. Derives the template's design language, EXTRACTS the components present in the source, and GENERATES the rest — missing category components and clean replacements for jQuery-coupled interactive ones — in the template's own style. Output is self-contained .tsx components in components/ plus tokens in templateos.config.ts, ready to preview and `npm run pack`.
 ---
 
 # HTML → TemplateOS converter
@@ -11,13 +11,21 @@ into the TemplateOS format: self-contained React + Tailwind components in `compo
 plus design tokens in `templateos.config.ts`. Once converted, they preview with
 `npm run dev`, then ship with `npm run pack`.
 
-Your job is to **dissect their HTML/CSS and rebuild it as idiomatic TemplateOS components**
-— not a mechanical find-and-replace. Read [reference.md](reference.md) for the exact target
-format, the manifest constraints every component must satisfy, the per-category component
-checklist, and a worked before/after example. **Read it before you start writing files.**
+Your job is to produce a **complete kit in the template's design language** — not a mechanical
+find-and-replace, and not only the sections the source happens to contain. You do two things,
+both anchored to one derived style guide:
+
+- **Extract** the components that exist in the template (NavBar, Hero, Footer, cards, sections).
+- **Generate** the rest *in that same style* — the category components the source lacks, plus
+  clean React replacements for jQuery/plugin-coupled interactive pieces (Modal, Tabs, Carousel).
+
+Read [reference.md](reference.md) before you write anything — especially **"Building a complete
+kit (extract + generate)"** (the extract-vs-generate rule + how to generate in-style) and the
+**"Category kit"** table (what a complete kit is, by exact component name). Also read the format
+rules, the manifest constraints, and the worked example.
 
 Work through the steps below in order. Keep the author in the loop at the two checkpoints
-(category + the section plan) — everything else you can do autonomously.
+(category + the kit plan) — everything else you can do autonomously.
 
 ## Step 0 — Confirm the environment
 
@@ -50,21 +58,27 @@ From the content, infer the TemplateOS category (`marketing`, `saas`, `dashboard
 one line and let the author confirm or correct it — the category drives the expected
 component set (reference.md → "Category checklist").
 
-## Step 3 — Plan the section split  ·  CHECKPOINT
+## Step 3 — Plan the complete kit  ·  CHECKPOINT
 
-Auto-split each page into **semantic sections**, one component each:
+The full list = **what you can extract from the source ∪ the category kit**
+(reference.md → "Category kit"). Sort every target into EXTRACT or GENERATE
+(reference.md → "Building a complete kit"):
 
-- Top-level landmarks become components: `<header>`/`<nav>` → `NavBar`, the lead
-  `<section>`/hero → `HeroSection`, feature blocks → `FeatureGrid`, pricing → `PricingCard`,
-  testimonials → `TestimonialCard`, CTA band → `CTABanner`, `<footer>` → `Footer`, etc.
-- **Deduplicate across pages**: a multi-page site repeats nav and footer on every page —
-  emit `NavBar` and `Footer` **once**. Keep page-unique sections.
-- Name every component in **PascalCase** and prefer the conventional names in
-  reference.md's checklist so the result matches what buyers expect for the category.
-- Cap at ~40 components; merge trivial fragments into their parent section.
+- **EXTRACT** — sections present in the source. Landmarks map to components: `<header>`/`<nav>`
+  → `NavBar`, the lead hero → `HeroSection`, feature blocks → `FeatureSection`, pricing →
+  `PricingSection`, `<footer>` → `Footer`, etc. **Dedupe across pages** (one `NavBar`, one
+  `Footer`). Use the **exact category-kit names** so the gallery checklist goes green.
+- **GENERATE in-style** — (a) any required/recommended component the source lacks, and (b)
+  clean replacements for interactive pieces (Modal, Tabs, Carousel, Select, Toast) even when
+  the source has a jQuery version.
 
-Present the plan as a short list — `SourceSection → ComponentName` — and let the author
-adjust before you write anything.
+Cap ~30; merge trivial fragments into their parent. Present the plan as two short lists and let
+the author adjust before you write anything:
+
+```
+Extract:   NavBar, HeroSection, FeatureSection, PricingSection, Footer
+Generate:  Button, Badge, Modal, Tabs, FAQSection, TestimonialsSection
+```
 
 ## Step 4 — Extract design tokens into templateos.config.ts
 
@@ -82,10 +96,18 @@ Every token is `{ value, description? }`. Keep at least 4 colors. Also update th
 fields: `id` (lowercase-with-hyphens), `name`, `description` (20–500 chars), `category`,
 `tags`, and leave `version` / `price` for the author unless they tell you otherwise.
 
-## Step 5 — Write the components
+## Step 5 — Write the kit (extract and generate)
 
-For **each** planned section, create `components/<PascalCaseName>.tsx`. Follow the
-COMPONENT RULES in reference.md exactly. The essentials:
+Create `components/<PascalCaseName>.tsx` for every target from Step 3 — extracted and generated
+alike, both obeying the same rules below.
+
+- **Extracted** components: translate the source markup to Tailwind.
+- **Generated** components: build fresh in the derived style (reference.md → "How to generate a
+  component in-style") — reuse the exact token values, the radius/shadow/border shape, the type
+  scale, and the spacing rhythm you extracted, with realistic domain-appropriate content. The
+  bar: a buyer can't tell which components were extracted and which were generated.
+
+The essentials every component must satisfy:
 
 - **Self-contained & renders with zero props** — realistic defaults pulled from the source
   copy (keep the author's real headlines and content, don't replace with Lorem ipsum).
@@ -101,26 +123,30 @@ COMPONENT RULES in reference.md exactly. The essentials:
 - **Responsive**: preserve the source's breakpoints with Tailwind `sm:`/`md:`/`lg:`.
 - **Images**: keep `<img src="...">` with the original paths; if assets are local, copy them
   into `public/` and reference them as `/asset.png`. List anything the author must copy.
-- **Interactivity**: re-implement *simple* JS behavior with React state (mobile menu toggle,
-  accordion, tabs). Drop heavy/library-driven scripts and leave a `// TODO` note rather than
-  importing a dependency — components must stay import-free.
+- **Interactivity**: keep simple in-component behavior (a NavBar's mobile toggle) as React
+  state. For interactive *components* (Modal, Tabs, Carousel, Select, Toast), do **not**
+  transliterate the source's jQuery/plugin version — generate a clean React + state version
+  in-style (Step 3 routed these to GENERATE). Never import a UI/animation library; components
+  stay import-free.
 
 Validate each file against the manifest constraints as you write (PascalCase name, code
 between 50 and 50,000 chars, description 5–200 chars). See reference.md → "Constraints".
 
 ## Step 6 — Verify
 
-1. If practical, run `npx tsc --noEmit` (or the project's typecheck) and fix type errors.
-2. Tell the author to run `npm run dev` and open http://localhost:3000 — the starter's
-   `app/page.tsx` renders the component gallery so they can eyeball each one.
+1. Run `npm run verify` — it type-checks every component in isolation (catches local imports,
+   type errors, missing deps, exactly how a buyer receives them). Fix everything it flags and
+   re-run until it passes. Never leave a failing component.
+2. Tell the author to run `npm run dev` and open http://localhost:3000/review — every component
+   live on one page so they can eyeball the whole kit.
 3. Spot-check that the converted output visually matches the source: spacing, colors,
    hierarchy. Fix obvious drift.
 
 ## Step 7 — Hand off
 
-Summarize what you produced: the component list (mapped from their sections), the tokens you
-extracted, and any assets they need to drop into `public/`. Then point them at the finish
-line:
+Summarize what you produced: the kit (which components you **extracted** vs **generated**
+in-style), the tokens you extracted, and any assets they need to drop into `public/`. Then
+point them at the finish line:
 
 ```
 npm run dev     # preview at localhost:3000 and tweak

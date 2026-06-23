@@ -16,7 +16,8 @@ buildable component library. Do the work end to end and stop only at the review 
    - **Extract** the static structural components present in the template (NavBar, Hero,
      Footer, cards, pricing) into `components/*.tsx`.
    - **Generate**, in that same style, the interactive components (Modal, Tabs, Carousel,
-     Select) and any component the category checklist expects but the template lacks.
+     Select) and any component the category kit expects but the template lacks (reference.md →
+     "Category kit" + "Building a complete kit").
    - Format rules (non-negotiable): one self-contained `.tsx` per component, default export,
      renders with zero props, Tailwind only, **no local imports**, inline SVG icons.
 
